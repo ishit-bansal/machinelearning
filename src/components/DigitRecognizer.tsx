@@ -21,7 +21,16 @@ export const DigitRecognizer = () => {
     const loadModel = async () => {
       try {
         setIsModelLoading(true);
-        const loadedModel = await tf.loadLayersModel('/model/model.json');
+        // Always use BASE_URL from vite.config.ts - public assets follow the base path
+        // In dev and production, this is "/machinelearning/"
+        const baseUrl = import.meta.env.BASE_URL || '/';
+        const modelUrl = `${baseUrl}model/model.json`.replace(/\/\/+/g, '/');
+        
+        if (import.meta.env.DEV) {
+          console.log('Loading model from:', modelUrl);
+        }
+        
+        const loadedModel = await tf.loadLayersModel(modelUrl);
         
         const testInput = tf.zeros([1, 28, 28]);
         const testOutput = loadedModel.predict(testInput) as tf.Tensor;
@@ -29,10 +38,16 @@ export const DigitRecognizer = () => {
         testInput.dispose();
         testOutput.dispose();
         
+        if (import.meta.env.DEV) {
+          console.log('Model loaded successfully!');
+        }
+        
         setModel(loadedModel);
         setIsModelLoading(false);
       } catch (error: any) {
         console.error('Error loading model:', error);
+        const baseUrl = import.meta.env.BASE_URL || '/';
+        console.error('Model URL attempted:', `${baseUrl}model/model.json`.replace(/\/\/+/g, '/'));
         setIsModelLoading(false);
       }
     };
@@ -44,7 +59,8 @@ export const DigitRecognizer = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext("2d");
+    // Use willReadFrequently for better performance with frequent readbacks
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
     if (!ctx) return;
 
     ctx.fillStyle = "#1a1625";
@@ -64,7 +80,7 @@ export const DigitRecognizer = () => {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
     if (ctx) {
       ctx.beginPath();
       ctx.moveTo(x, y);
@@ -81,7 +97,7 @@ export const DigitRecognizer = () => {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
     if (ctx) {
       ctx.lineTo(x, y);
       ctx.stroke();
@@ -256,7 +272,7 @@ export const DigitRecognizer = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
     if (ctx) {
       ctx.fillStyle = "#1a1625";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
