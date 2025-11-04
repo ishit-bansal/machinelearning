@@ -222,6 +222,19 @@ export const HumansAndMachines = () => {
   return (
     <section ref={sectionRef} className="relative w-full bg-background pt-16 sm:pt-20 pb-12 sm:pb-16">
       <div className="container flex flex-col items-center gap-12 md:gap-16">
+        {/* Heading */}
+        <motion.div
+          className="text-center mb-2"
+          initial={{ opacity: 0, y: -20 }}
+          animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
+          transition={{ duration: 0.8, delay: 0.1 }}
+        >
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold">
+            <span className="text-foreground">Better </span>
+            <span className="text-primary glow-text">Together</span>
+          </h2>
+        </motion.div>
+
         <div className="flex w-full flex-col items-center gap-10 md:flex-row md:items-center md:justify-between">
           {/* Human */}
           <motion.div 
