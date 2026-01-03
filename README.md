@@ -2,7 +2,7 @@
 
 An interactive website that explains the basics of machine learning through visuals, examples, and simple explanations.
 
-**[Live Site](https://machinelearning-amber.vercel.app)**
+**[Live Site](https://machinelearning.ishitbansal.com)**
 
 ## Overview
 
